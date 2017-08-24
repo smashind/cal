@@ -59,4 +59,6 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 gem 'react_on_rails'
 
 gem 'slim'
-gem 'momentjs-rails'
+
+gem 'mini_racer', platforms: :ruby
+gem 'webpacker_lite'
