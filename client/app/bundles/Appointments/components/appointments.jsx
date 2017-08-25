@@ -1,6 +1,7 @@
 import React from 'react';
 import AppointmentForm from './appointmentform';
 import {AppointmentsList} from './appointmentslist';
+import update from 'immutability-helper';
 
 export default class Appointments extends React.Component {
   constructor (props) {
@@ -26,11 +27,13 @@ export default class Appointments extends React.Component {
   }
 
   addNewAppointment (appointment) {
-    const appointments = React.addons.update(this.state.appointments, { $push: [appointment]});
+    const appointments = update(this.state.appointments, { $push: [appointment]});
     this.setState({
       appointments: appointments.sort(function(a,b){
         return new Date(a.appt_time) - new Date(b.appt_time);
-      })
+      }),
+      title: '',
+      appt_time: '',
     });
   }
 
