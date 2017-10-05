@@ -1,5 +1,5 @@
-import React from 'react';
-import {Appointment} from './appointment';
+import React, {PropTypes} from 'react';
+import {Appointment} from './Appointment';
 
 export const AppointmentsList = ({appointments}) =>
   <div>
@@ -9,3 +9,7 @@ export const AppointmentsList = ({appointments}) =>
       )
     })}
   </div>
+
+AppointmentsList.propTypes = {
+  appointments: PropTypes.array.isRequired
+}

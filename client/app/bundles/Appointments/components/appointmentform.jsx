@@ -1,26 +1,51 @@
-import React from 'react';
-
+import React, {PropTypes} from 'react';
 import Datetime from 'react-datetime';
+import moment from 'moment';
+import {validations} from '../utils/validations';
 
 export default class AppointmentForm extends React.Component {
-  handleChange (e) {
-    const name = e.target.name;
-    const obj = {};
-    obj[name] = e.target.value;
-    this.props.onUserInput(obj);
+  static propTypes = {
+    title: PropTypes.shape({
+      value: PropTypes.string.isRequired,
+      valid: PropTypes.bool.isRequired
+    }).isRequired,
+    appt_time: PropTypes.shape({
+      //value: PropTypes.instanceOf(Date).isRequired,
+      //value: PropTypes.string.isRequired,
+      valid: PropTypes.bool.isRequired
+    }).isRequired,
+    formValid: PropTypes.bool.isRequired,
+    onUserInput: PropTypes.func.isRequired,
+    onFormSubmit: PropTypes.func.isRequired,
   }
 
-  handleSubmit(e) {
+  static formValidations = {
+    title: [
+      (s) => { return(validations.checkMinLength(s, 3)) },
+      (s) => { return(validations.checkMaxLength(s, 100)) }
+    ],
+    appt_time: [
+      (t) => { return(validations.timeShouldBeInTheFuture(t)) }
+    ]
+  }
+
+  handleChange = (e) => {
+    const fieldName = e.target.name;
+    const fieldValue = e.target.value;
+    this.props.onUserInput(fieldName, fieldValue,
+                            AppointmentForm.formValidations[fieldName]);
+  }
+
+  handleSubmit = (e) => {
     e.preventDefault();
     this.props.onFormSubmit();
   }
 
-  setApptTime(e) {
-    const name = 'appt_time';
-    const obj = {};
-    if(obj[name] = e.toDate()) {
-      this.props.onUserInput(obj);
-    }
+  setApptTime = (e) => {
+    const fieldName = 'appt_time';
+    const fieldValue = e.toDate();
+    this.props.onUserInput(fieldName, fieldValue,
+                            AppointmentForm.formValidations[fieldName]);
   }
 
   render () {
@@ -31,16 +56,21 @@ export default class AppointmentForm extends React.Component {
     return (
       <div>
         <h2>Make a new appointment</h2>
-        <form onSubmit={(event) => this.handleSubmit(event)}>
+        <form onSubmit={this.handleSubmit}>
           <input name='title' placeholder='Appointment Title'
-            value={this.props.input_title}
-            onChange={(event) => this.handleChange(event)} />
+            value={this.props.title.value}
+            onChange={this.handleChange} />
 
           <Datetime input={false} open={true} inputProps={inputProps}
-            value={this.props.appt_time}
-            onChange={(event) => this.setApptTime(event)} />
+            value={moment(this.props.appt_time.value)}
+            onChange={this.setApptTime} />
 
-          <input type='submit' value='Make Appointment' className='submit-button' />
+          <input
+            type='submit'
+            value='Make Appointment'
+            className='submit-button'
+            disabled={!this.props.formValid}
+          />
         </form>
       </div>
     )

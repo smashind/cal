@@ -10,7 +10,7 @@ class AppointmentsController < ApplicationController
     if @appointment.save
       render json: @appointment
     else
-      render json: @appointment.errors, status: :unprocessible_entity
+      render json: @appointment.errors, status: :unprocessable_entity
     end
   end
 
